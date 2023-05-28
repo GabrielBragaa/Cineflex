@@ -2,13 +2,14 @@ import { useEffect } from "react"
 import styled from "styled-components"
 import axios from "axios";
 import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
-export default function HomePage() {
+export default function HomePage(props) {
     
     let [filmes, setFilmes] = useState([]);
 
     useEffect(() => {
-        const promise = axios.get('https://mock-api.driven.com.br/api/v8/cineflex/movies');
+        const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies`);
         promise.then(filme => setFilmes(filme.data));
     }, [])
     console.log(filmes);
@@ -17,9 +18,12 @@ export default function HomePage() {
             Selecione o filme
 
             <ListContainer>
-                {filmes.map(filme => <MovieContainer>
-                    <img src={filme.posterURL} alt='poster' />
-                </MovieContainer>)}
+                {filmes.map(filme => 
+                <Link to={`/sessoes/${filme.id}`}>
+                    <MovieContainer key={filme.id} >
+                        <img src={filme.posterURL} alt='poster' />
+                    </MovieContainer>
+                </Link>)}
             </ListContainer>
 
         </PageContainer>
