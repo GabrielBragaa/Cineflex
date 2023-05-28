@@ -3,17 +3,31 @@ import HomePage from "./pages/HomePage/HomePage"
 import SeatsPage from "./pages/SeatsPage/SeatsPage"
 import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
+import axios from "axios"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { createGlobalStyle } from "styled-components"
+import ResetStyle from "./style/ResetStyle"
+import GlobalStyle from "./style/GlobalStyle"
+
+axios.defaults.headers.common['Authorization'] = '3xijNEkWBxIyrAhlSmOfkbRg';
 
 export default function App() {
     return (
-        <>
-           <NavContainer>CINEFLEX</NavContainer>
+    <>    
+        <ResetStyle/>
+        <GlobalStyle/>
+        <BrowserRouter>
+            <NavContainer>CINEFLEX</NavContainer>
+            <Routes>   
+                
 
-            <HomePage />
-            {/* <SeatsPage /> */}
-            {/* <SessionsPage /> */}
-            {/* <SuccessPage /> */}
-        </>
+                <Route path='/' element={<HomePage />}/>
+                <Route path='/assentos/:idSessao' element={<SeatsPage/>} />
+                <Route path='/sessoes/:idFilme' element={<SessionsPage/>} />
+                <Route path='/sucesso' element={<SuccessPage/>} />
+            </Routes>
+        </BrowserRouter>
+    </>
     )
 }
 
