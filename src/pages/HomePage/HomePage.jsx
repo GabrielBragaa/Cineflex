@@ -13,7 +13,6 @@ export default function HomePage() {
         promise.then(filme => setFilmes(filme.data));
         promise.catch(console.log('O servidor está passando por um problema. Tente novamente mais tarde.'))
     }, [])
-    console.log('Filme data: ', filmes)
     return (
         <PageContainer>
             Selecione o filme
