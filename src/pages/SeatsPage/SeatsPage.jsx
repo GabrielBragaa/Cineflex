@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import axios from "axios";
 import { useEffect } from "react";
@@ -7,9 +7,13 @@ import { useState } from "react";
 export default function SeatsPage() {
 
     const params = useParams();
+    const navigate = useNavigate();
     let [seats, setSeats] = useState([]);
     let [filme, setFilme] = useState([]);
-    console.log(filme);
+    let [ids, setIds] = useState([]);
+    let [seatOK, setSeatOK] = useState([]);
+    let [name, setName] = useState('');
+    let [cpf, setCPF] = useState('');
 
     useEffect(() => {
         const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`);
@@ -18,45 +22,72 @@ export default function SeatsPage() {
             setFilme(s.data) 
         });
     }, []) 
-
     if(filme.length === 0) {
         return (
             <div style={{ marginTop: "80px", fontSize: "30px" }}>
-                <p>Carregando Sessões...</p>
+                <p>Carregando Assentos...</p>
             </div>
         )
     } 
+
+    function getSeat(id, isAvailable, name) {
+        
+        if(!ids.includes(id) && isAvailable){
+            setIds([...ids, id]);
+            setSeatOK([...seatOK, name])
+        } else if(ids.includes(id)){
+            setIds(ids.filter(i => {
+                if(i === id) return false
+                else return true
+            }))
+        } else if(!isAvailable){
+            alert("Esse assento não está disponível")
+
+        }
+
+    }
+    
+    function buyTicket(e) {
+        e.preventDefault();
+
+        const objSuccess = { seatOK, name, cpf: cpf, title:filme.movie.title, hour: filme.name, date: filme.day.date };
+        const infoBuyer = {ids, name, cpf};
+        const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', infoBuyer);
+        promise.then(response => navigate('/sucesso', {state: objSuccess}));
+    }
+
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                {seats.map(assentos => <SeatItem>{assentos.name}</SeatItem>)}
+                {seats.map(assentos => <SeatItem isAvailable={assentos.isAvailable} key={assentos.id} 
+                 ids={ids} id={assentos.id} onClick={() => getSeat(assentos.id, assentos.isAvailable, assentos.name)}>{assentos.name}</SeatItem>) }
             </SeatsContainer>
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle style={{backgroundColor:'#1AAE9E', border:'1px solid #0E7D71'}}/>
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle style={{backgroundColor:'#C3CFD9', border:'1px solid #7B8B99'}}/>
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle style={{backgroundColor:'#FBE192', border:'1px solid #F7C52B'}}/>
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
 
-            <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+            <FormContainer onSubmit={buyTicket}>
+                <label htmlFor="nome">Nome do Comprador:</label>
+                <input placeholder="Digite seu nome..." id='nome' required value={name} onChange={(e) => setName(e.target.value)} />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <label htmlFor="cpf">CPF do Comprador:</label>
+                <input placeholder="Digite seu CPF..." id="cpf" required value={cpf} onChange={(e) => setCPF(e.target.value)} />
 
-                <button>Reservar Assento(s)</button>
+                <button type="submits">Reservar Assento(s)</button>
             </FormContainer>
 
             <FooterContainer>
@@ -85,6 +116,21 @@ const PageContainer = styled.div`
     padding-bottom: 120px;
     padding-top: 70px;
 `
+
+const SeatItem = styled.div`
+    border: 1px solid ${props => !props.isAvailable ? '#F7C52B' : (!props.ids.includes(props.id)) ? '#7B8B99' : '#0E7D71'};
+    background-color: ${props => !props.isAvailable ? '#FBE192' : (!props.ids.includes(props.id)) ? '#C3CFD9' : '#1AAE9E'};   // Essa cor deve mudar
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    font-family: 'Roboto';
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px 3px;
+`
+
 const SeatsContainer = styled.div`
     width: 330px;
     display: flex;
@@ -94,7 +140,8 @@ const SeatsContainer = styled.div`
     justify-content: center;
     margin-top: 20px;
 `
-const FormContainer = styled.div`
+
+const FormContainer = styled.form`
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
@@ -132,19 +179,7 @@ const CaptionItem = styled.div`
     align-items: center;
     font-size: 12px;
 `
-const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
-    height: 25px;
-    width: 25px;
-    border-radius: 25px;
-    font-family: 'Roboto';
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 5px 3px;
-`
+
 const FooterContainer = styled.div`
     width: 100%;
     height: 120px;
