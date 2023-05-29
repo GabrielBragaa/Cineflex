@@ -19,7 +19,7 @@ export default function SuccessPage() {
 
             <TextContainer data-test="seats-info">
                 <strong><p>Ingressos</p></strong>
-                {seatOK.map(assento => <p key={assento.id} >Assento {assento}</p>)}
+                {seatOK.map(assento => <p key={assento.id}>Assento {assento}</p>)}
             </TextContainer>
 
             <TextContainer data-test="client-info">

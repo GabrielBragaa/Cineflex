@@ -51,11 +51,29 @@ export default function SeatsPage() {
     function buyTicket(e) {
         e.preventDefault();
 
-        const objSuccess = { seatOK, name, cpf: cpf, title:filme.movie.title, hour: filme.name, date: filme.day.date };
+        const objSuccess = { seatOK, name, cpf: formateCPF(cpf), title:filme.movie.title, hour: filme.name, date: filme.day.date };
         const infoBuyer = {ids, name, cpf};
         const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many', infoBuyer);
         promise.then(response => navigate('/sucesso', {state: objSuccess}));
         promise.catch(console.log('Falha ao comprar ingresso. Tente novamente.'))
+    }
+
+    function formateCPF(cpf){
+        cpf = cpf.replace(/\D/g, '');
+
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d{2})$/, '$1-$2');
+
+        return cpf;
+    }
+
+    if(filme.length === 0) {
+        return (
+            <div style={{ marginTop: "80px", fontSize: "30px" }}>
+                <p>Carregando Sessões...</p>
+            </div>
+        )
     }
 
     return (

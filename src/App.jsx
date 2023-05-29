@@ -7,7 +7,6 @@ import axios from "axios"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import ResetStyle from "./style/ResetStyle"
 import GlobalStyle from "./style/GlobalStyle"
-import { useState } from "react"
 
 axios.defaults.headers.common['Authorization'] = '3xijNEkWBxIyrAhlSmOfkbRg';
 
