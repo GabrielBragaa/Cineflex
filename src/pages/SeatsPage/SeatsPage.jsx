@@ -42,7 +42,7 @@ export default function SeatsPage() {
                 else return true
             }))
         } else if(!isAvailable){
-            console.log("Esse assento não está disponível")
+            alert("Esse assento não está disponível")
 
         }
 
