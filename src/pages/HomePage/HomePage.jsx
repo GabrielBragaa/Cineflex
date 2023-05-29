@@ -16,11 +16,10 @@ export default function HomePage(props) {
     return (
         <PageContainer>
             Selecione o filme
-
             <ListContainer>
                 {filmes.map(filme => 
                 <Link to={`/sessoes/${filme.id}`}>
-                    <MovieContainer key={filme.id} >
+                    <MovieContainer key={filme.id} data-test="movie">
                         <img src={filme.posterURL} alt='poster' />
                     </MovieContainer>
                 </Link>)}

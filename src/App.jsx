@@ -5,7 +5,6 @@ import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
 import axios from "axios"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { createGlobalStyle } from "styled-components"
 import ResetStyle from "./style/ResetStyle"
 import GlobalStyle from "./style/GlobalStyle"
 
@@ -19,8 +18,6 @@ export default function App() {
         <BrowserRouter>
             <NavContainer>CINEFLEX</NavContainer>
             <Routes>   
-                
-
                 <Route path='/' element={<HomePage />}/>
                 <Route path='/assentos/:idSessao' element={<SeatsPage/>} />
                 <Route path='/sessoes/:idFilme' element={<SessionsPage/>} />
